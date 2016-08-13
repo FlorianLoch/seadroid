@@ -14,14 +14,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.seafile.seadroid2.R;
 import com.seafile.seadroid2.SeafConnection;
 import com.seafile.seadroid2.SeafException;
 import com.seafile.seadroid2.transfer.DownloadTaskInfo;
-import com.seafile.seadroid2.transfer.TransferManager;
 import com.seafile.seadroid2.transfer.TransferService;
-import com.seafile.seadroid2.ui.ToastUtils;
 import com.seafile.seadroid2.ui.activity.BrowserActivity;
 import com.seafile.seadroid2.util.Utils;
 
@@ -152,12 +151,14 @@ public class FetchFileDialog extends DialogFragment {
         String fileName = Utils.fileNameFromPath(path);
         if (err.getCode() == HttpURLConnection.HTTP_NOT_FOUND) {
             getDialog().dismiss();
-            ToastUtils.show(getBrowserActivity(), "The file \"" + fileName + "\" has been deleted");
+            final String message = String.format(getActivity().getString(R.string.file_not_found), fileName);
+            Toast.makeText(getBrowserActivity(), message, Toast.LENGTH_SHORT).show();
         } else if (err.getCode() == SeafConnection.HTTP_STATUS_REPO_PASSWORD_REQUIRED) {
             handlePassword();
         } else {
             getDialog().dismiss();
-            ToastUtils.show(getBrowserActivity(), "Failed to download file \"" + fileName);
+            final String message = String.format(getActivity().getString(R.string.op_exception_failed_to_download_file), fileName);
+            Toast.makeText(getBrowserActivity(), message, Toast.LENGTH_SHORT).show();
             if (mListener != null) {
                 mListener.onFailure(err);
             }

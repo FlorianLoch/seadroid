@@ -38,7 +38,6 @@ import com.seafile.seadroid2.ssl.CertsManager;
 import com.seafile.seadroid2.transfer.TransferService;
 import com.seafile.seadroid2.ui.CopyMoveContext;
 import com.seafile.seadroid2.ui.NavContext;
-import com.seafile.seadroid2.ui.ToastUtils;
 import com.seafile.seadroid2.ui.activity.BrowserActivity;
 import com.seafile.seadroid2.ui.adapter.SeafItemAdapter;
 import com.seafile.seadroid2.ui.dialog.SslConfirmDialog;
@@ -826,7 +825,7 @@ public class ReposFragment extends ListFragment {
             if (err != null) {
                 if (err.getCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
                     // Token expired, should login again
-                    ToastUtils.show(mActivity, R.string.err_token_expired);
+                    mActivity.showShortToast(mActivity, R.string.err_token_expired);
                     mActivity.logoutWhenTokenExpired();
                 } else {
                     Log.e(DEBUG_TAG, "failed to load repos: " + err.getMessage());
@@ -1002,10 +1001,11 @@ public class ReposFragment extends ListFragment {
                     showPasswordDialog();
                 } else if (err.getCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
                     // Token expired, should login again
-                    ToastUtils.show(mActivity, R.string.err_token_expired);
+                    mActivity.showShortToast(mActivity, R.string.err_token_expired);
                     mActivity.logoutWhenTokenExpired();
                 } else if (err.getCode() == HttpURLConnection.HTTP_NOT_FOUND) {
-                    ToastUtils.show(mActivity, String.format("The folder \"%s\" was deleted", myPath));
+                    final String message = String.format(getString(R.string.op_exception_folder_deleted), myPath);
+                    mActivity.showShortToast(mActivity, message);
                 } else {
                     Log.d(DEBUG_TAG, "failed to load dirents: " + err.getMessage());
                     err.printStackTrace();
@@ -1088,7 +1088,7 @@ public class ReposFragment extends ListFragment {
                     || repoID == null
                     || dirPath == null) {
                 if (item.getItemId() != R.id.action_mode_select_all) {
-                    ToastUtils.show(mActivity, R.string.action_mode_no_items_selected);
+                    mActivity.showShortToast(mActivity, R.string.action_mode_no_items_selected);
                     return true;
                 }
             }
